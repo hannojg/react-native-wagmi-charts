@@ -2,7 +2,7 @@ import React from 'react';
 import type { AtPoint } from './types';
 import { useLineChart } from './useLineChart';
 import { LineChartDimensionsContext } from './Chart';
-import { getYForX, parse } from 'react-native-redash';
+import { getYForX } from 'react-native-redash';
 import { useDerivedValue, withTiming } from 'react-native-reanimated';
 
 export type ViewAtProps = {
@@ -11,21 +11,15 @@ export type ViewAtProps = {
 };
 
 export function useYAt({ at, offsetY = 0 }: ViewAtProps) {
-  const { width, path, height, gutter } = React.useContext(
+  const { pointWidth, parsedPath, height, gutter } = React.useContext(
     LineChartDimensionsContext
   );
-  const { data, yDomain } = useLineChart();
-
-  const parsedPath = React.useMemo(() => parse(path), [path]);
-  const pointWidth = React.useMemo(
-    () => width / data.length,
-    [data.length, width]
-  );
+  const { yDomain } = useLineChart();
 
   return useDerivedValue(() => {
     if (typeof at === 'number' || at.index != null) {
       const index = typeof at === 'number' ? at : at.index;
-      const yForX = getYForX(parsedPath!, pointWidth * index) || 0;
+      const yForX = getYForX(parsedPath, pointWidth * index) || 0;
       return withTiming(yForX + offsetY);
     }
     /**
