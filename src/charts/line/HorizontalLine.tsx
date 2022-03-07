@@ -1,14 +1,10 @@
 import React from 'react';
-import Animated, {
-  useAnimatedProps,
-  useDerivedValue,
-  withTiming,
-} from 'react-native-reanimated';
+import Animated, { useAnimatedProps } from 'react-native-reanimated';
 import { Line as SVGLine, LineProps } from 'react-native-svg';
-import { getYForX } from 'react-native-redash';
 
 import { LineChartDimensionsContext } from './Chart';
-import { useLineChart } from './useLineChart';
+import type { AtPoint } from './types';
+import { useYAt } from './useYAt';
 
 const AnimatedLine = Animated.createAnimatedComponent(SVGLine);
 
@@ -33,16 +29,7 @@ type HorizontalLineProps = {
    * />
    * ```
    */
-  at?:
-    | {
-        index: number;
-        value?: never;
-      }
-    | {
-        index?: never;
-        value: number;
-      }
-    | number;
+  at?: AtPoint;
 };
 
 LineChartHorizontalLine.displayName = 'LineChartHorizontalLine';
@@ -53,35 +40,10 @@ export function LineChartHorizontalLine({
   at = { index: 0 },
   offsetY = 0,
 }: HorizontalLineProps) {
-  const { width, parsedPath, pointWidth, height, gutter } = React.useContext(
-    LineChartDimensionsContext
-  );
-  const { yDomain } = useLineChart();
-
-  const y = useDerivedValue(() => {
-    if (typeof at === 'number' || at.index != null) {
-      const index = typeof at === 'number' ? at : at.index;
-      const yForX = getYForX(parsedPath!, pointWidth * index) || 0;
-      return withTiming(yForX + offsetY);
-    }
-    /**
-     * <gutter>
-     * | ---------- | <- yDomain.max  |
-     * |            |                 | offsetTop
-     * |            | <- value        |
-     * |            |
-     * |            | <- yDomain.min
-     * <gutter>
-     */
-
-    const offsetTop = yDomain.max - at.value;
-    const percentageOffsetTop = offsetTop / (yDomain.max - yDomain.min);
-
-    const heightBetweenGutters = height - gutter * 2;
-
-    const offsetTopPixels = gutter + percentageOffsetTop * heightBetweenGutters;
-
-    return withTiming(offsetTopPixels + offsetY);
+  const { width } = React.useContext(LineChartDimensionsContext);
+  const y = useYAt({
+    at,
+    offsetY,
   });
 
   const lineAnimatedProps = useAnimatedProps(() => ({
