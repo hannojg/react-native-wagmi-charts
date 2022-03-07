@@ -16,6 +16,7 @@ import { LineChartDatetimeText } from './DatetimeText';
 import { useLineChartDatetime } from './useDatetime';
 import { useLineChartPrice } from './usePrice';
 import { useLineChart } from './useLineChart';
+import { useYAt } from './useYAt';
 export * from './Chart';
 export * from './ChartPath';
 export * from './Highlight';
@@ -52,4 +53,5 @@ export declare const LineChart: typeof _LineChart & {
     usePrice: typeof useLineChartPrice;
     useChart: typeof useLineChart;
     HoverTrap: () => JSX.Element;
+    useYAt: typeof useYAt;
 };

@@ -1,5 +1,6 @@
 /// <reference types="react" />
 import { LineProps } from 'react-native-svg';
+import type { AtPoint } from './types';
 declare type HorizontalLineProps = {
     color?: string;
     lineProps?: Partial<LineProps>;
@@ -21,13 +22,7 @@ declare type HorizontalLineProps = {
      * />
      * ```
      */
-    at?: {
-        index: number;
-        value?: never;
-    } | {
-        index?: never;
-        value: number;
-    } | number;
+    at?: AtPoint;
 };
 export declare function LineChartHorizontalLine({ color, lineProps, at, offsetY, }: HorizontalLineProps): JSX.Element;
 export declare namespace LineChartHorizontalLine {

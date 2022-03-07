@@ -24,3 +24,10 @@ export declare type YDomain = {
     min: number;
     max: number;
 };
+export declare type AtPoint = {
+    index: number;
+    value?: never;
+} | {
+    index?: never;
+    value: number;
+} | number;
